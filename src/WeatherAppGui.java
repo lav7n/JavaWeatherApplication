@@ -1,167 +1,128 @@
 import org.json.simple.JSONObject;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import org.json.JSONObject;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-public class WeatherAppGui extends JFrame {
+public class WeatherAppGui extends Application {
     private JSONObject weatherData;
 
-    public WeatherAppGui(){
-        // setup our gui and add a title
-        super("Weather App");
+    @Override
+    public void start(Stage primaryStage) {
+        // Set the title
+        primaryStage.setTitle("Weather App");
 
-        // configure gui to end the program's process once it has been closed
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // Create a Pane as the root of the scene graph
+        Pane root = new Pane();
 
-        // set the size of our gui (in pixels)
-        setSize(450, 650);
+        // Set the size of the scene (which will be the size of the stage)
+        Scene scene = new Scene(root, 450, 650);
 
-        // load our gui at the center of the screen
-        setLocationRelativeTo(null);
+        // Add GUI components to the root
+        addGuiComponents(root);
 
-        // make our layout manager null to manually position our components within the gui
-        setLayout(null);
+        // Configure the stage to end the program when it is closed
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
 
-        // prevent any resize of our gui
-        setResizable(false);
-
-        addGuiComponents();
+        // Set the scene on the stage and display it
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false); // Prevent any resize of our GUI
+        primaryStage.show();
     }
 
-    private void addGuiComponents(){
-        // search field
-        JTextField searchTextField = new JTextField();
+private void addGuiComponents(Pane root){
+    // Search field
+    TextField searchTextField = new TextField();
+    searchTextField.setLayoutX(15);
+    searchTextField.setLayoutY(15);
+    searchTextField.setPrefWidth(351);
+    searchTextField.setPrefHeight(45);
+    searchTextField.setFont(new Font("Dialog", 24));
 
-        // set the location and size of our component
-        searchTextField.setBounds(15, 15, 351, 45);
+    root.getChildren().add(searchTextField);
 
-        // change the font style and size
-        searchTextField.setFont(new Font("Dialog", Font.PLAIN, 24));
+    // Weather image
+    ImageView weatherConditionImage = new ImageView(new Image("file:src/assets/cloudy.png"));
+    weatherConditionImage.setFitWidth(450);
+    weatherConditionImage.setPreserveRatio(true);
+    weatherConditionImage.setLayoutX(0);
+    weatherConditionImage.setLayoutY(125);
+    root.getChildren().add(weatherConditionImage);
 
-        add(searchTextField);
+    // Temperature text
+    Label temperatureText = new Label("10 C");
+    temperatureText.setLayoutX(0);
+    temperatureText.setLayoutY(350);
+    temperatureText.setPrefWidth(450);
+    temperatureText.setPrefHeight(54);
+    temperatureText.setFont(new Font("Dialog", 48));
+    temperatureText.setAlignment(Pos.CENTER);
+    root.getChildren().add(temperatureText);
 
-        // weather image
-        JLabel weatherConditionImage = new JLabel(loadImage("src/assets/cloudy.png"));
-        weatherConditionImage.setBounds(0, 125, 450, 217);
-        add(weatherConditionImage);
+    // Weather condition description
+    Label weatherConditionDesc = new Label("Cloudy");
+    weatherConditionDesc.setLayoutX(0);
+    weatherConditionDesc.setLayoutY(405);
+    weatherConditionDesc.setPrefWidth(450);
+    weatherConditionDesc.setFont(new Font("Dialog", 32));
+    weatherConditionDesc.setAlignment(Pos.CENTER);
+    root.getChildren().add(weatherConditionDesc);
 
-        // temperature text
-        JLabel temperatureText = new JLabel("10 C");
-        temperatureText.setBounds(0, 350, 450, 54);
-        temperatureText.setFont(new Font("Dialog", Font.BOLD, 48));
+    // Humidity image
+    ImageView humidityImage = new ImageView(new Image("file:src/assets/humidity.png"));
+    humidityImage.setLayoutX(15);
+    humidityImage.setLayoutY(500);
+    root.getChildren().add(humidityImage);
 
-        // center the text
-        temperatureText.setHorizontalAlignment(SwingConstants.CENTER);
-        add(temperatureText);
+    // Humidity text
+    Label humidityText = new Label("Humidity 100%");
+    humidityText.setLayoutX(90);
+    humidityText.setLayoutY(500);
+    humidityText.setFont(new Font("Dialog", 16));
+    root.getChildren().add(humidityText);
 
-        // weather condition description
-        JLabel weatherConditionDesc = new JLabel("Cloudy");
-        weatherConditionDesc.setBounds(0, 405, 450, 36);
-        weatherConditionDesc.setFont(new Font("Dialog", Font.PLAIN, 32));
-        weatherConditionDesc.setHorizontalAlignment(SwingConstants.CENTER);
-        add(weatherConditionDesc);
+    // Windspeed image
+    ImageView windspeedImage = new ImageView(new Image("file:src/assets/windspeed.png"));
+    windspeedImage.setLayoutX(220);
+    windspeedImage.setLayoutY(500);
+    root.getChildren().add(windspeedImage);
 
-        // humidity image
-        JLabel humidityImage = new JLabel(loadImage("src/assets/humidity.png"));
-        humidityImage.setBounds(15, 500, 74, 66);
-        add(humidityImage);
+    // Windspeed text
+    Label windspeedText = new Label("Windspeed 15km/h");
+    windspeedText.setLayoutX(310);
+    windspeedText.setLayoutY(500);
+    windspeedText.setFont(new Font("Dialog", 16));
+    root.getChildren().add(windspeedText);
 
-        // humidity text
-        JLabel humidityText = new JLabel("<html><b>Humidity</b> 100%</html>");
-        humidityText.setBounds(90, 500, 85, 55);
-        humidityText.setFont(new Font("Dialog", Font.PLAIN, 16));
-        add(humidityText);
-
-        // windspeed image
-        JLabel windspeedImage = new JLabel(loadImage("src/assets/windspeed.png"));
-        windspeedImage.setBounds(220, 500, 74, 66);
-        add(windspeedImage);
-
-        // windspeed text
-        JLabel windspeedText = new JLabel("<html><b>Windspeed</b> 15km/h</html>");
-        windspeedText.setBounds(310, 500, 85, 55);
-        windspeedText.setFont(new Font("Dialog", Font.PLAIN, 16));
-        add(windspeedText);
-
-        // search button
-        JButton searchButton = new JButton(loadImage("src/assets/search.png"));
-
-        // change the cursor to a hand cursor when hovering over this button
-        searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        searchButton.setBounds(375, 13, 47, 45);
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // get location from user
-                String userInput = searchTextField.getText();
-
-                // validate input - remove whitespace to ensure non-empty text
-                if(userInput.replaceAll("\\s", "").length() <= 0){
-                    return;
-                }
-
-                // retrieve weather data
-                weatherData = WeatherApp.getWeatherData(userInput);
-
-                // update gui
-
-                // update weather image
-                String weatherCondition = (String) weatherData.get("weather_condition");
-
-                // depending on the condition, we will update the weather image that corresponds with the condition
-                switch(weatherCondition){
-                    case "Clear":
-                        weatherConditionImage.setIcon(loadImage("src/assets/clear.png"));
-                        break;
-                    case "Cloudy":
-                        weatherConditionImage.setIcon(loadImage("src/assets/cloudy.png"));
-                        break;
-                    case "Rain":
-                        weatherConditionImage.setIcon(loadImage("src/assets/rain.png"));
-                        break;
-                    case "Snow":
-                        weatherConditionImage.setIcon(loadImage("src/assets/snow.pngImage"));
-                        break;
-                }
-
-                // update temperature text
-                double temperature = (double) weatherData.get("temperature");
-                temperatureText.setText(temperature + " C");
-
-                // update weather condition text
-                weatherConditionDesc.setText(weatherCondition);
-
-                // update humidity text
-                long humidity = (long) weatherData.get("humidity");
-                humidityText.setText("<html><b>Humidity</b> " + humidity + "%</html>");
-
-                // update windspeed text
-                double windspeed = (double) weatherData.get("windspeed");
-                windspeedText.setText("<html><b>Windspeed</b> " + windspeed + "km/h</html>");
-            }
-        });
-        add(searchButton);
-    }
+    // Search button
+    Button searchButton = new Button();
+    searchButton.setLayoutX(375);
+    searchButton.setLayoutY(13);
+    searchButton.setPrefWidth(47);
+    searchButton.setPrefHeight(45);
+    searchButton.setCursor(Cursor.HAND);
+    searchButton.setGraphic(new ImageView(new Image("file:src/assets/search.png")));
+    searchButton.setOnAction(e -> {
+        // Event handling code goes here
+    });
+    root.getChildren().add(searchButton);
+}
 
     // used to create images in our gui components
-    private ImageIcon loadImage(String resourcePath){
-        try{
-            // read the image file from the path given
-            BufferedImage image = ImageIO.read(new File(resourcePath));
+    private ImageView loadImage(String resourcePath){
+        try {
+            // Read the image file from the path given
+            Image image = new Image(new FileInputStream(resourcePath));
 
-            // returns an image icon so that our component can render it
-            return new ImageIcon(image);
-        }catch(IOException e){
+            // Returns an ImageView so that our component can render it
+            return new ImageView(image);
+        } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Could not find resource: " + resourcePath);
         }
-
-        System.out.println("Could not find resource");
+        
         return null;
     }
 }

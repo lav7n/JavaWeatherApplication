@@ -1,18 +1,20 @@
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class AppLauncher {
+public class AppLauncher extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Create an instance of your WeatherAppGui which is a JavaFX application
+            WeatherAppGui weatherAppGui = new WeatherAppGui();
+            weatherAppGui.start(primaryStage); // Start the JavaFX application
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run(){
-                // display our weather app gui
-                new WeatherAppGui().setVisible(true);
-
-//                System.out.println(WeatherApp.getLocationData("Tokyo"));
-
-//                System.out.println(WeatherApp.getCurrentTime());
-
-            }
-        });
+        launch(args); // Launch the JavaFX application
     }
 }
